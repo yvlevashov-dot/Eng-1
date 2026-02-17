@@ -9,34 +9,28 @@ class PWM_DAC:
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.gpio_pin,GPIO.OUT,initial = 0)
+        self.pwm = GPIO.PWM(self.gpio_pin, self.pwn_frequency)
     
     def deinit(self):
+        self.pwm.ChangeDutyCycle(0)
         GPIO.output(self.gpio_pin,0)
         GPIO.cleanup()
 
     def set_voltage(self,voltage):
-        dynamic_voltage = float(3.11)
-        if not ( 0.0 <= voltage <= dynamic_voltage):
-            print(f"Напряжение выходит за данимический диапозон ЦАП (0.00 - {dynamic_voltage: .2f} 2B)")
-            print("устанавливаем 0.0В")
-            return 0
-        return int((voltage / dynamic_voltage) * 255)
-
+        voltage = voltage / self.dynamic_range * 100
+        print(voltage)
+        self.set_number(voltage)
+    def set_number(self,number):
+        self.pwm.start(number)
 
 if __name__ == "__main__":
     try:
-        dac = PWM_DAC(12,1200,3.290,True)
-        pwm = GPIO.PWM(dac.gpio_pin,200)
-        duty=0
-        pwm.start(duty)
+        dac = PWM_DAC(12,1800,3.290,True)
+
         while True:
             try:
                 voltage = float (input("Введите напряжение в Вольтах: "))
                 dac.set_voltage(voltage)
-
-                print(dac.set_voltage(voltage))
-                duty = dac.set_voltage(voltage)*100/255
-                pwm.ChangeDutyCycle(duty)
             except ValueError:
                 print("Не число")
     finally:

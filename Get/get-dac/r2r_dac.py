@@ -17,12 +17,11 @@ class R2R_DAC:
         return [int(i) for i in bin(number)[2:].zfill(8)]
     
     def set_voltage(self,voltage):
-        dynamic_range = float(3.11)
-        if not ( 0.0 <= voltage <= dynamic_range):
-            print(f"Напряжение выходит за данимический диапозон ЦАП (0.00 - {dynamic_range: .2f} 2B)")
+        if not ( 0.0 <= voltage <= self.dynamic_range):
+            print(f"Напряжение выходит за данимический диапозон ЦАП (0.00 - {self.dynamic_range: .2f} 2B)")
             print("устанавливаем 0.0В")
             return 0
-        return int((voltage / dynamic_range) * 255)
+        return int((voltage / self.dynamic_range) * 255)
 if __name__ == "__main__":
     try:
         dac = R2R_DAC([16,20,21,25,2,17,27,22],3.183,True)
