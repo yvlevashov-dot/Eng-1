@@ -4,7 +4,7 @@ class R2R_ADC:
     def __init__(self, dynamic_range, compare_time = 0.01, verbose = False):
         self.dynamic_range = dynamic_range
         self.verbose = verbose
-        self.comare_time = compare_time 
+        self.compare_time = compare_time 
 
         self.bits_gpio = [26, 20, 19, 16, 13, 12, 25, 11]
         self.comp_gpio = 21
@@ -26,7 +26,7 @@ class R2R_ADC:
             signal = self.number_to_dac(value)
 
             voltage = (value / 255) * (self.dynamic_range)
-            time.sleep(self.comare_time)
+            time.sleep(self.compare_time)
             comparator_value = GPIO.input(self.comp_gpio)
             if comparator_value == 1: 
                 print("ADC value = {:^3} -> {}".format(value,signal))
@@ -37,9 +37,19 @@ class R2R_ADC:
                 return (voltage)
 
     def det_sc_voltage(self):
-        vlt = self.sequential_counting_adc(self)
-        return (vlt)
-        
+        for value in range(256):
+            signal = self.number_to_dac(value)
+
+            voltage = (value / 255) * (self.dynamic_range)
+            time.sleep(self.compare_time)
+            comparator_value = GPIO.input(self.comp_gpio)
+            if comparator_value == 1: 
+                return(voltage)
+
+
+            if value == 255 and comparator_value!=1:
+                return(voltage)
+
 
 if __name__ == "__main__":
     try:
