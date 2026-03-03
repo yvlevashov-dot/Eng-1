@@ -23,12 +23,14 @@ class MCP3021:
         number = self.get_number()
         voltage = (number / 1024) * self.dynamic_range
         return voltage
-try:
-    MCP = MCP3021(3.138, True)
-    while True:
-        voltage = MCP.get_voltage()
-        print(voltage)
-        time.sleep(0.01)
 
-finally:
-    MCP.deinit()
+if __name__ == "__main__":
+    try:
+        MCP = MCP3021(3.138, True)
+        while True:
+            voltage = MCP.get_voltage()
+            print(voltage)
+            time.sleep(0.01)
+
+    finally:
+        MCP.deinit()
