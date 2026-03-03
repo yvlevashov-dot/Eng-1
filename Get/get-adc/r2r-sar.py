@@ -2,16 +2,17 @@ import adc_plot as plot
 import r2r_adc as adc
 import time
 
-r2r = adc.R2R_ADC(3.183,0.001,True)
+r2r = adc.R2R_ADC(3.183,0.0001,True)
 voltages = list()
 times = list()
 sampling_periods = list()
 duration = 5
+
 try:
     start = time.time()
     while (time.time()-start) < duration:
         sampling_start = time.time()
-        voltage =r2r.sequential_counting_adc()
+        voltage =r2r.get_sar_voltage()
         voltages.append(voltage)
         times.append(time.time()-start)
         sampling_periods.append(time.time() - sampling_start)
